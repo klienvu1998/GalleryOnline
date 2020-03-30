@@ -9,7 +9,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="CLOUDINARY_URL"
+            android:value="cloudinary://187241979941139:beWil-iDxUjX5Ok4SEjCh0yAO5Q@deib1e0wj"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
