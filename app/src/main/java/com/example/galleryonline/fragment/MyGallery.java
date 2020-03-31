@@ -1,5 +1,7 @@
 package com.example.galleryonline.fragment;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -9,19 +11,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.cloudinary.Transformation;
-import com.cloudinary.android.MediaManager;
 import com.example.galleryonline.adapter.ImageAdapter;
 import com.example.galleryonline.R;
 import com.example.galleryonline.model.ImageModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
 public class MyGallery extends Fragment {
 
+    private final static String URL_GALLERY = "https://firebasestorage.googleapis.com/v0/b/galleryonline-e0b49.appspot.com/o/dataGallery.json?alt=media&token=48f96193-e2ed-44e7-9c5c-53dd42c3fdae";
     public static ArrayList<ImageModel> arrImage;
     private ImageAdapter imageAdapter;
     private RecyclerView recyclerView;
+    private String result;
 
     public MyGallery() {
     }
@@ -53,20 +64,46 @@ public class MyGallery extends Fragment {
         recyclerView.setAdapter(imageAdapter);
     }
 
-    private void initUrlImage() {
-        arrImage.add(new ImageModel("3_h73rml", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("3_h73rml")));
-        arrImage.add(new ImageModel("5_edb2bf", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("5_edb2bf")));
-        arrImage.add(new ImageModel("4_d84rop", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("4_d84rop")));
-        arrImage.add(new ImageModel("3_h73rml", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("3_h73rml")));
-        arrImage.add(new ImageModel("5_edb2bf", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("5_edb2bf")));
-        arrImage.add(new ImageModel("4_d84rop", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("4_d84rop")));
-        arrImage.add(new ImageModel("3_h73rml", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("3_h73rml")));
-        arrImage.add(new ImageModel("5_edb2bf", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("5_edb2bf")));
-        arrImage.add(new ImageModel("4_d84rop", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("4_d84rop")));
-        arrImage.add(new ImageModel("3_h73rml", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("3_h73rml")));
-        arrImage.add(new ImageModel("5_edb2bf", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("5_edb2bf")));
-        arrImage.add(new ImageModel("4_d84rop", MediaManager.get().url().transformation(new Transformation().width(150).height(150).crop("thumb")).generate("4_d84rop")));
-        imageAdapter.notifyDataSetChanged();
+    @SuppressLint("StaticFieldLeak")
+    public static class GetDataJSON extends AsyncTask<String,Void,String>{
+
+        WeakReference<MyGallery> weakReference;
+
+        private GetDataJSON(MyGallery myGallery) {
+            this.weakReference = new WeakReference<>(myGallery);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                weakReference.get().result = bufferedReader.readLine();
+                urlConnection.disconnect();
+                return weakReference.get().result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String resultT) {
+            super.onPostExecute(weakReference.get().result);
+            Gson gson = new Gson();
+            MyGallery.arrImage = gson.fromJson(resultT,new TypeToken<ArrayList<ImageModel>>(){}.getType());
+            weakReference.get().imageAdapter.refreshMyList(MyGallery.arrImage);
+        }
     }
 
+    private void initUrlImage() {
+        new GetDataJSON(this).execute(URL_GALLERY);
+    }
 }
+
+

@@ -70,6 +70,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
         });
     }
 
+    public void refreshMyList(ArrayList<ImageModel> listT){
+        this.list.clear();
+        this.list.addAll(listT);
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

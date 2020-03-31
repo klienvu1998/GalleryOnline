@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "314793754611",
+    "firebase_url": "https://galleryonline-e0b49.firebaseio.com",
+    "project_id": "galleryonline-e0b49",
+    "storage_bucket": "galleryonline-e0b49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314793754611:android:b95dd5ef97960e51055c86",
+        "android_client_info": {
+          "package_name": "com.example.galleryonline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314793754611-o7r836l4t4e62tml2pq62vlkefqss9oi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqY85s-GQW9XI6TpGiGNrCbU1bhIJ7Adc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314793754611-o7r836l4t4e62tml2pq62vlkefqss9oi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
